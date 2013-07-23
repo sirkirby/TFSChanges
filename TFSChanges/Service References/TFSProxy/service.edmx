@@ -1,0 +1,360 @@
+﻿<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="1.0">
+    <Schema Namespace="Microsoft.Samples.DPE.ODataTFS.Model.Entities" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2007/05/edm">
+      <EntityType Name="Build">
+        <Key>
+          <PropertyRef Name="Definition" />
+          <PropertyRef Name="Number" />
+          <PropertyRef Name="Project" />
+        </Key>
+        <Property Name="Project" Type="Edm.String" Nullable="false" />
+        <Property Name="Definition" Type="Edm.String" Nullable="false" />
+        <Property Name="Number" Type="Edm.String" Nullable="false" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Reason" Type="Edm.String" Nullable="true" />
+        <Property Name="Quality" Type="Edm.String" Nullable="true" />
+        <Property Name="Status" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="RequestedBy" Type="Edm.String" Nullable="true" />
+        <Property Name="RequestedFor" Type="Edm.String" Nullable="true" />
+        <Property Name="LastChangedBy" Type="Edm.String" Nullable="true" />
+        <Property Name="StartTime" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="FinishTime" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="LastChangedOn" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" m:FC_TargetPath="SyndicationUpdated" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="BuildFinished" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="DropLocation" Type="Edm.String" Nullable="true" />
+        <Property Name="Errors" Type="Edm.String" Nullable="true" />
+        <Property Name="Warnings" Type="Edm.String" Nullable="true" />
+        <NavigationProperty Name="WorkItems" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build_WorkItems" FromRole="Build" ToRole="WorkItems" />
+        <NavigationProperty Name="Changesets" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build_Changesets" FromRole="Build" ToRole="Changesets" />
+      </EntityType>
+      <EntityType Name="BuildDefinition">
+        <Key>
+          <PropertyRef Name="Definition" />
+          <PropertyRef Name="Project" />
+        </Key>
+        <Property Name="Project" Type="Edm.String" Nullable="false" />
+        <Property Name="Definition" Type="Edm.String" Nullable="false" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+      </EntityType>
+      <EntityType Name="Changeset">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ArtifactUri" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Comment" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Committer" Type="Edm.String" Nullable="true" />
+        <Property Name="CreationDate" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" m:FC_TargetPath="SyndicationUpdated" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Owner" Type="Edm.String" Nullable="true" />
+        <Property Name="Branch" Type="Edm.String" Nullable="true" />
+        <Property Name="WebEditorUrl" Type="Edm.String" Nullable="true" />
+        <NavigationProperty Name="Changes" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset_Changes" FromRole="Changeset" ToRole="Changes" />
+        <NavigationProperty Name="WorkItems" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset_WorkItems" FromRole="Changeset" ToRole="WorkItems" />
+      </EntityType>
+      <EntityType Name="Project">
+        <Key>
+          <PropertyRef Name="Name" />
+        </Key>
+        <Property Name="Name" Type="Edm.String" Nullable="false" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Collection" Type="Edm.String" Nullable="true" />
+        <NavigationProperty Name="Changesets" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Changesets" FromRole="Project" ToRole="Changesets" />
+        <NavigationProperty Name="Builds" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Builds" FromRole="Project" ToRole="Builds" />
+        <NavigationProperty Name="BuildDefinitions" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_BuildDefinitions" FromRole="Project" ToRole="BuildDefinitions" />
+        <NavigationProperty Name="WorkItems" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_WorkItems" FromRole="Project" ToRole="WorkItems" />
+        <NavigationProperty Name="Queries" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Queries" FromRole="Project" ToRole="Queries" />
+        <NavigationProperty Name="Branches" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Branches" FromRole="Project" ToRole="Branches" />
+        <NavigationProperty Name="AreaPaths" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_AreaPaths" FromRole="Project" ToRole="AreaPaths" />
+        <NavigationProperty Name="IterationPaths" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_IterationPaths" FromRole="Project" ToRole="IterationPaths" />
+      </EntityType>
+      <EntityType Name="WorkItem">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Project" Type="Edm.String" Nullable="true" />
+        <Property Name="Type" Type="Edm.String" Nullable="true" />
+        <Property Name="WebEditorUrl" Type="Edm.String" Nullable="true" />
+        <Property Name="AreaPath" Type="Edm.String" Nullable="true" />
+        <Property Name="IterationPath" Type="Edm.String" Nullable="true" />
+        <Property Name="Revision" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Priority" Type="Edm.String" Nullable="true" />
+        <Property Name="Severity" Type="Edm.String" Nullable="true" />
+        <Property Name="StackRank" Type="Edm.Double" Nullable="false" />
+        <Property Name="AssignedTo" Type="Edm.String" Nullable="true" />
+        <Property Name="CreatedDate" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="CreatedBy" Type="Edm.String" Nullable="true" />
+        <Property Name="ChangedDate" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" m:FC_TargetPath="SyndicationUpdated" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="ChangedBy" Type="Edm.String" Nullable="true" />
+        <Property Name="ResolvedBy" Type="Edm.String" Nullable="true" />
+        <Property Name="Title" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="State" Type="Edm.String" Nullable="true" />
+        <Property Name="Reason" Type="Edm.String" Nullable="true" />
+        <Property Name="CompletedWork" Type="Edm.Double" Nullable="false" />
+        <Property Name="RemainingWork" Type="Edm.Double" Nullable="false" />
+        <Property Name="Description" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="ReproSteps" Type="Edm.String" Nullable="true" />
+        <Property Name="FoundInBuild" Type="Edm.String" Nullable="true" />
+        <Property Name="IntegratedInBuild" Type="Edm.String" Nullable="true" />
+        <Property Name="AttachedFileCount" Type="Edm.Int32" Nullable="false" />
+        <Property Name="HyperLinkCount" Type="Edm.Int32" Nullable="false" />
+        <Property Name="RelatedLinkCount" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Risk" Type="Edm.String" Nullable="true" />
+        <Property Name="StoryPoints" Type="Edm.Double" Nullable="false" />
+        <Property Name="OriginalEstimate" Type="Edm.Double" Nullable="false" />
+        <Property Name="BacklogPriority" Type="Edm.Double" Nullable="false" />
+        <Property Name="BusinessValue" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Effort" Type="Edm.Double" Nullable="false" />
+        <Property Name="Blocked" Type="Edm.String" Nullable="true" />
+        <Property Name="Size" Type="Edm.Double" Nullable="false" />
+        <NavigationProperty Name="Attachments" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem_Attachments" FromRole="WorkItem" ToRole="Attachments" />
+        <NavigationProperty Name="Links" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem_Links" FromRole="WorkItem" ToRole="Links" />
+      </EntityType>
+      <EntityType Name="Attachment" m:HasStream="true">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.String" Nullable="false" />
+        <Property Name="WorkItemId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Index" Type="Edm.Int32" Nullable="false" />
+        <Property Name="AttachedTime" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" m:FC_TargetPath="SyndicationUpdated" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="CreationTime" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="LastWriteTime" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Extension" Type="Edm.String" Nullable="true" />
+        <Property Name="Comment" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Length" Type="Edm.Int64" Nullable="false" />
+        <Property Name="Uri" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="Change">
+        <Key>
+          <PropertyRef Name="Changeset" />
+          <PropertyRef Name="Path" />
+        </Key>
+        <Property Name="Collection" Type="Edm.String" Nullable="true" />
+        <Property Name="Changeset" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ChangeType" Type="Edm.String" Nullable="true" />
+        <Property Name="Path" Type="Edm.String" Nullable="false" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Type" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="Query">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.String" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="true" />
+        <Property Name="Description" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="QueryText" Type="Edm.String" Nullable="true" />
+        <Property Name="Path" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <NavigationProperty Name="WorkItems" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Query_WorkItems" FromRole="Query" ToRole="WorkItems" />
+        <Property Name="Project" Type="Edm.String" Nullable="true" />
+        <Property Name="QueryType" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="Branch">
+        <Key>
+          <PropertyRef Name="Path" />
+        </Key>
+        <Property Name="Path" Type="Edm.String" Nullable="false" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Description" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="DateCreated" Type="Edm.DateTime" Nullable="false" ConcurrencyMode="Fixed" m:FC_TargetPath="SyndicationUpdated" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <NavigationProperty Name="Changesets" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Branch_Changesets" FromRole="Branch" ToRole="Changesets" />
+      </EntityType>
+      <EntityType Name="AreaPath">
+        <Key>
+          <PropertyRef Name="Path" />
+        </Key>
+        <Property Name="Path" Type="Edm.String" Nullable="false" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Name" Type="Edm.String" Nullable="true" ConcurrencyMode="Fixed" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <NavigationProperty Name="SubAreas" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.AreaPath_SubAreas" FromRole="AreaPath" ToRole="SubAreas" />
+      </EntityType>
+      <EntityType Name="Link">
+        <Key>
+          <PropertyRef Name="SourceWorkItemId" />
+        </Key>
+        <Property Name="SourceWorkItemId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ArtifactLinkType" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="BaseLinkType" Type="Edm.String" Nullable="true" />
+        <Property Name="Comment" Type="Edm.String" Nullable="true" />
+        <Property Name="LinkedArtifactUri" Type="Edm.String" Nullable="true" />
+        <Property Name="Location" Type="Edm.String" Nullable="true" />
+        <Property Name="LinkTypeEnd" Type="Edm.String" Nullable="true" />
+        <Property Name="RelatedWorkItemId" Type="Edm.Int32" Nullable="false" />
+      </EntityType>
+      <EntityType Name="IterationPath">
+        <Key>
+          <PropertyRef Name="Path" />
+        </Key>
+        <Property Name="Path" Type="Edm.String" Nullable="false" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <Property Name="Name" Type="Edm.String" Nullable="true" ConcurrencyMode="Fixed" m:FC_TargetPath="SyndicationSummary" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+        <NavigationProperty Name="SubIterations" Relationship="Microsoft.Samples.DPE.ODataTFS.Model.Entities.IterationPath_SubIterations" FromRole="IterationPath" ToRole="SubIterations" />
+      </EntityType>
+      <EntityType Name="User">
+        <Key>
+          <PropertyRef Name="UserName" />
+        </Key>
+        <Property Name="UserName" Type="Edm.String" Nullable="false" />
+        <Property Name="Id" Type="Edm.String" Nullable="true" />
+        <Property Name="DisplayName" Type="Edm.String" Nullable="true" m:FC_TargetPath="SyndicationTitle" m:FC_ContentKind="text" m:FC_KeepInContent="true" />
+      </EntityType>
+      <Association Name="Build_WorkItems">
+        <End Role="Build" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build" Multiplicity="*" />
+        <End Role="WorkItems" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem" Multiplicity="*" />
+      </Association>
+      <Association Name="Build_Changesets">
+        <End Role="Build" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build" Multiplicity="*" />
+        <End Role="Changesets" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset" Multiplicity="*" />
+      </Association>
+      <Association Name="Changeset_Changes">
+        <End Role="Changeset" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset" Multiplicity="*" />
+        <End Role="Changes" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Change" Multiplicity="*" />
+      </Association>
+      <Association Name="Changeset_WorkItems">
+        <End Role="Changeset" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset" Multiplicity="*" />
+        <End Role="WorkItems" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_Changesets">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="Changesets" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_Builds">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="Builds" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_BuildDefinitions">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="BuildDefinitions" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.BuildDefinition" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_WorkItems">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="WorkItems" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_Queries">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="Queries" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Query" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_Branches">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="Branches" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Branch" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_AreaPaths">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="AreaPaths" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.AreaPath" Multiplicity="*" />
+      </Association>
+      <Association Name="Project_IterationPaths">
+        <End Role="Project" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" Multiplicity="*" />
+        <End Role="IterationPaths" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.IterationPath" Multiplicity="*" />
+      </Association>
+      <Association Name="WorkItem_Attachments">
+        <End Role="WorkItem" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem" Multiplicity="*" />
+        <End Role="Attachments" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Attachment" Multiplicity="*" />
+      </Association>
+      <Association Name="WorkItem_Links">
+        <End Role="WorkItem" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem" Multiplicity="*" />
+        <End Role="Links" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Link" Multiplicity="*" />
+      </Association>
+      <Association Name="Query_WorkItems">
+        <End Role="Query" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Query" Multiplicity="*" />
+        <End Role="WorkItems" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem" Multiplicity="*" />
+      </Association>
+      <Association Name="Branch_Changesets">
+        <End Role="Branch" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Branch" Multiplicity="*" />
+        <End Role="Changesets" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset" Multiplicity="*" />
+      </Association>
+      <Association Name="AreaPath_SubAreas">
+        <End Role="AreaPath" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.AreaPath" Multiplicity="*" />
+        <End Role="SubAreas" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.AreaPath" Multiplicity="*" />
+      </Association>
+      <Association Name="IterationPath_SubIterations">
+        <End Role="IterationPath" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.IterationPath" Multiplicity="*" />
+        <End Role="SubIterations" Type="Microsoft.Samples.DPE.ODataTFS.Model.Entities.IterationPath" Multiplicity="*" />
+      </Association>
+    </Schema>
+    <Schema Namespace="Microsoft.Samples.DPE.ODataTFS.Model" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns="http://schemas.microsoft.com/ado/2007/05/edm">
+      <EntityContainer Name="TFSData" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="Builds" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build" />
+        <EntitySet Name="BuildDefinitions" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.BuildDefinition" />
+        <EntitySet Name="Changesets" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset" />
+        <EntitySet Name="Projects" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project" />
+        <EntitySet Name="WorkItems" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem" />
+        <EntitySet Name="Attachments" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Attachment" />
+        <EntitySet Name="Changes" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Change" />
+        <EntitySet Name="Queries" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Query" />
+        <EntitySet Name="Branches" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Branch" />
+        <EntitySet Name="AreaPaths" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.AreaPath" />
+        <EntitySet Name="Links" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Link" />
+        <EntitySet Name="IterationPaths" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.IterationPath" />
+        <EntitySet Name="Users" EntityType="Microsoft.Samples.DPE.ODataTFS.Model.Entities.User" />
+        <AssociationSet Name="Build_WorkItems" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build_WorkItems">
+          <End Role="Build" EntitySet="Builds" />
+          <End Role="WorkItems" EntitySet="WorkItems" />
+        </AssociationSet>
+        <AssociationSet Name="Build_Changesets" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Build_Changesets">
+          <End Role="Build" EntitySet="Builds" />
+          <End Role="Changesets" EntitySet="Changesets" />
+        </AssociationSet>
+        <AssociationSet Name="Changeset_Changes" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset_Changes">
+          <End Role="Changeset" EntitySet="Changesets" />
+          <End Role="Changes" EntitySet="Changes" />
+        </AssociationSet>
+        <AssociationSet Name="Changeset_WorkItems" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Changeset_WorkItems">
+          <End Role="Changeset" EntitySet="Changesets" />
+          <End Role="WorkItems" EntitySet="WorkItems" />
+        </AssociationSet>
+        <AssociationSet Name="Project_Changesets" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Changesets">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="Changesets" EntitySet="Changesets" />
+        </AssociationSet>
+        <AssociationSet Name="Project_Builds" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Builds">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="Builds" EntitySet="Builds" />
+        </AssociationSet>
+        <AssociationSet Name="Project_BuildDefinitions" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_BuildDefinitions">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="BuildDefinitions" EntitySet="BuildDefinitions" />
+        </AssociationSet>
+        <AssociationSet Name="Project_WorkItems" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_WorkItems">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="WorkItems" EntitySet="WorkItems" />
+        </AssociationSet>
+        <AssociationSet Name="Project_Queries" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Queries">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="Queries" EntitySet="Queries" />
+        </AssociationSet>
+        <AssociationSet Name="Project_Branches" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_Branches">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="Branches" EntitySet="Branches" />
+        </AssociationSet>
+        <AssociationSet Name="Project_AreaPaths" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_AreaPaths">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="AreaPaths" EntitySet="AreaPaths" />
+        </AssociationSet>
+        <AssociationSet Name="Project_IterationPaths" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Project_IterationPaths">
+          <End Role="Project" EntitySet="Projects" />
+          <End Role="IterationPaths" EntitySet="IterationPaths" />
+        </AssociationSet>
+        <AssociationSet Name="WorkItem_Attachments" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem_Attachments">
+          <End Role="WorkItem" EntitySet="WorkItems" />
+          <End Role="Attachments" EntitySet="Attachments" />
+        </AssociationSet>
+        <AssociationSet Name="WorkItem_Links" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.WorkItem_Links">
+          <End Role="WorkItem" EntitySet="WorkItems" />
+          <End Role="Links" EntitySet="Links" />
+        </AssociationSet>
+        <AssociationSet Name="Query_WorkItems" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Query_WorkItems">
+          <End Role="Query" EntitySet="Queries" />
+          <End Role="WorkItems" EntitySet="WorkItems" />
+        </AssociationSet>
+        <AssociationSet Name="Branch_Changesets" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.Branch_Changesets">
+          <End Role="Branch" EntitySet="Branches" />
+          <End Role="Changesets" EntitySet="Changesets" />
+        </AssociationSet>
+        <AssociationSet Name="AreaPath_SubAreas" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.AreaPath_SubAreas">
+          <End Role="AreaPath" EntitySet="AreaPaths" />
+          <End Role="SubAreas" EntitySet="AreaPaths" />
+        </AssociationSet>
+        <AssociationSet Name="IterationPath_SubIterations" Association="Microsoft.Samples.DPE.ODataTFS.Model.Entities.IterationPath_SubIterations">
+          <End Role="IterationPath" EntitySet="IterationPaths" />
+          <End Role="SubIterations" EntitySet="IterationPaths" />
+        </AssociationSet>
+        <FunctionImport Name="TriggerBuild" m:HttpMethod="POST" />
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
