@@ -61,7 +61,7 @@ namespace TFSChanges.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("244053")]
+        [global::System.Configuration.DefaultSettingValueAttribute("242793")]
         public string HipChatRoom {
             get {
                 return ((string)(this["HipChatRoom"]));
