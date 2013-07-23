@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="eea58176-a5d1-4169-9574-b561169f6b5d" xmlns="urn:schemas-microsoft-com:xml-dataservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="e1f05675-83c7-4291-b4fe-7019de2d13f3" xmlns="urn:schemas-microsoft-com:xml-dataservicemap">
   <MetadataSources>
     <MetadataSource Address="https://tfsodata.visualstudio.com/DefaultCollection/" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.edmx" MetadataType="Edmx" ID="4bd292e5-3753-4e61-8717-0b2909b9ba75" SourceId="1" SourceUrl="https://tfsodata.visualstudio.com/DefaultCollection/" />
+    <MetadataFile FileName="service.edmx" MetadataType="Edmx" ID="d5ec6d7b-1faa-4a62-a6c2-9d577c99a57a" SourceId="1" SourceUrl="https://tfsodata.visualstudio.com/DefaultCollection/" />
   </Metadata>
   <Extensions />
   <Parameters>

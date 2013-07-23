@@ -67,5 +67,24 @@ namespace TFSChanges.Properties {
                 return ((string)(this["HipChatRoom"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DefaultEndpointsProtocol=https;AccountName=ryantechdev;AccountKey=5Qf3G3ZvpNZ+xa8" +
+            "HGjQmcm6/GOJhtM6oGOZpEyENOC4u9I9HZ7GvXF6V9guzZv4vVrfcEzxFO3pAYLOCdaedLQ==")]
+        public string RTDevStorage {
+            get {
+                return ((string)(this["RTDevStorage"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TFSIntegration")]
+        public string PreferencesTable {
+            get {
+                return ((string)(this["PreferencesTable"]));
+            }
+        }
     }
 }
