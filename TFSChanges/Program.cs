@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using TFSChanges.Properties;
 using TFSChanges.TFSProxy;
 
@@ -74,11 +75,12 @@ namespace TFSChanges
 
 			var builder = new StringBuilder();
 			var writer = new StringWriter(builder);
-
+			var issueRegex = new Regex(@"[A-Z]+\-[0-9]+");
 			foreach (var changeset in changesets)
 			{
+				var comment = issueRegex.Replace(changeset.Comment, (m) => string.Format(@"<a href=""http://issues.ryantechinc.com:81/issue/{0}"">{0}</a>", m.Captures[0].Value));
 				writer.WriteLine(string.Format("<a href='{0}'>Changeset {1}</a>", changeset.WebEditorUrl, changeset.Id));
-				writer.WriteLine(changeset.Comment);
+				writer.WriteLine(comment);
 				writer.WriteLine(string.Format("<strong>change by {0} on {1}</strong>", changeset.Committer, changeset.CreationDate));
 				writer.Flush();
 				yield return builder.ToString();
