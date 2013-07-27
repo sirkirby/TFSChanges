@@ -11,6 +11,7 @@ namespace TFSChanges
 		private CloudTable _table;
 
 		public DateTime LastChecked { get; set; }
+		public string Projects { get; set; }
 
 		/// <summary>
 		/// Init the preferences
@@ -18,11 +19,16 @@ namespace TFSChanges
 		public Preferences()
 		{
 			LastChecked = DateTime.UtcNow.AddHours(-24);
+			Projects = "[]";
 		}
 
 		public void Load()
 		{
+#if DEBUG
+			PartitionKey = "TFSChanges_Test";
+#else
 			PartitionKey = "TFSChanges";
+#endif
 			var version = Assembly.GetExecutingAssembly().GetName().Version;
 			RowKey = version.ToString();
 
@@ -37,10 +43,14 @@ namespace TFSChanges
 			var results = _table.Execute(operation);
 
 			if (results != null)
-				LastChecked = ((Preferences)results.Result).LastChecked;
+			{
+				LastChecked = ((Preferences) results.Result).LastChecked;
+				Projects = ((Preferences)results.Result).Projects;
+			}
 			else
 			{
 				LastChecked = DateTime.UtcNow.AddHours(-24);
+				Projects = "[]";
 				Save();
 			}
 		}
@@ -50,7 +60,7 @@ namespace TFSChanges
 		/// </summary>
 		public void Save()
 		{
-			var operation = TableOperation.InsertOrReplace(this);
+			var operation = TableOperation.InsertOrMerge(this);
 			_table.Execute(operation);
 		}
 	}
