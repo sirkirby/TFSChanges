@@ -44,7 +44,7 @@ namespace TFSChanges
 
 			if (results != null)
 			{
-				LastChecked = ((Preferences) results.Result).LastChecked;
+				LastChecked = ((Preferences) results.Result).LastChecked.AddSeconds(-5);
 				Projects = ((Preferences)results.Result).Projects;
 			}
 			else
