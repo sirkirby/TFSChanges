@@ -141,7 +141,8 @@ namespace TFSChanges
 				writer.WriteLine(string.Format("<br/><a href='https://ryantech.visualstudio.com/DefaultCollection/{0}/_build'>{1}</a> Total build time: {2} minutes {3} seconds", build.Project, build.Status, elapsed.Minutes, elapsed.Seconds));
 				if (build.Status == "Failed")
 				{
-					writer.WriteLine("<br/>" + build.Errors);
+					
+					writer.WriteLine("<br/>" + build.Errors.Substring(0, build.Errors.Length > 200 ? 200 : build.Errors.Length) + "...");
 					result.Success = false;
 				}
 				writer.Flush();
