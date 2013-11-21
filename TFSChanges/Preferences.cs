@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using TFSChanges.Properties;
@@ -8,9 +10,14 @@ namespace TFSChanges
 {
 	public class Preferences : TableEntity
 	{
-		private CloudTable _table;
-
 		public DateTime LastChecked { get; set; }
+		public string TfsUser { get; set; }
+		public string TfsPassword { get; set; }
+		public string TfsApiUri { get; set; }
+		public string TfsUri { get; set; }
+		public string HipChatAuthToken { get; set; }
+		public string AlmTaskUri { get; set; }
+		public string AlmTaskExpression { get; set; }
 		public string Projects { get; set; }
 
 		/// <summary>
@@ -22,46 +29,64 @@ namespace TFSChanges
 			Projects = "[]";
 		}
 
-		public void Load()
+		/// <summary>
+		/// Loads this instance.
+		/// </summary>
+		/// <returns>Task{System.Boolean}.</returns>
+		public static async Task<Preferences> LoadAsync()
 		{
-#if DEBUG
-			PartitionKey = "TFSChanges_Test";
+			var prefs = new Preferences();
+#if (DEBUG)
+			{
+				prefs.PartitionKey = "TFSChanges_Test";
+			}
 #else
-			PartitionKey = "TFSChanges";
+			{
+				prefs.PartitionKey = "TFSChanges";
+			}
 #endif
+			// pull the settings for this app version
 			var version = Assembly.GetExecutingAssembly().GetName().Version;
-			RowKey = version.ToString();
+			prefs.RowKey = version.ToString();
 
 			// Retrieve storage account from connection string
-			var storageAccount = CloudStorageAccount.Parse(Settings.Default.RTDevStorage);
+			var storageAccount = CloudStorageAccount.Parse(Settings.Default.StorageConnectionString);
 			// Create the table client
 			var tableClient = storageAccount.CreateCloudTableClient();
 			//Create the CloudTable that represents the "people" table.
-			_table = tableClient.GetTableReference(Settings.Default.PreferencesTable);
+			var table = tableClient.GetTableReference(Settings.Default.PreferencesTable);
 
-			var operation = TableOperation.Retrieve<Preferences>(PartitionKey, RowKey);
-			var results = _table.Execute(operation);
+			var operation = TableOperation.Retrieve<Preferences>(prefs.PartitionKey, prefs.RowKey);
+			var results = await table.ExecuteAsync(operation);
 
 			if (results != null)
 			{
-				LastChecked = ((Preferences) results.Result).LastChecked.AddSeconds(-5);
-				Projects = ((Preferences)results.Result).Projects;
+				prefs = Mapper.Map<Preferences>(results.Result);
+				return prefs;
 			}
 			else
 			{
-				LastChecked = DateTime.UtcNow.AddHours(-24);
-				Projects = "[]";
-				Save();
+				await SaveAsync(prefs);
+				return prefs;
 			}
 		}
 
 		/// <summary>
 		/// save the preferences
 		/// </summary>
-		public void Save()
+		public static async Task<bool> SaveAsync(Preferences prefs)
 		{
-			var operation = TableOperation.InsertOrMerge(this);
-			_table.Execute(operation);
+			// Retrieve storage account from connection string
+			var storageAccount = CloudStorageAccount.Parse(Settings.Default.StorageConnectionString);
+			// Create the table client
+			var tableClient = storageAccount.CreateCloudTableClient();
+			//Create the CloudTable that represents the "people" table.
+			var table = tableClient.GetTableReference(Settings.Default.PreferencesTable);
+			// save operation
+			var operation = TableOperation.InsertOrMerge(prefs);
+			var response = await table.ExecuteAsync(operation);
+			// return success | failure
+			return response.HttpStatusCode == 200;
 		}
 	}
 }

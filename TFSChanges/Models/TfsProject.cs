@@ -1,8 +1,14 @@
 ﻿namespace TFSChanges.Models
 {
-	public class ProjectConfig
+	/// <summary>
+	/// Class TfsProject.
+	/// </summary>
+	/// <remarks>JSON serialized project data</remarks>
+	public class TfsProject
 	{
 		public string Name { get; set; }
+		public string ProductionUri { get; set; }
+		public string StagingUri { get; set; }
 		public int HipChatRoomId { get; set; }
 		public bool HipChatNotify { get; set; }
 		public string HipChatChangesetColor { get; set; }

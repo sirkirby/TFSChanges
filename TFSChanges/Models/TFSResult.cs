@@ -1,19 +1,19 @@
 ﻿namespace TFSChanges.Models
 {
-	public enum TFSType
+	public enum TfsType
 	{
 		Changeset,
 		Build
 	}
 	
-	public class TFSResult
+	public class TfsResult
 	{
 		public string FormattedMessage { get; set; }
 		public string From { get; set; }
 		public bool Success { get; set; }
-		public TFSType TFSType { get; set; }
+		public TfsType TFSType { get; set; }
 
-		public TFSResult()
+		public TfsResult()
 		{
 			Success = true;
 		}
