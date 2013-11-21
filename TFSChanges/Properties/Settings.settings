@@ -2,19 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TFSChanges.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="TFSUser" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ryantech\sirkirby</Value>
-    </Setting>
-    <Setting Name="TFSPassword" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Ck86711!</Value>
-    </Setting>
-    <Setting Name="TFSUri" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://tfsodata.visualstudio.com/DefaultCollection/</Value>
-    </Setting>
-    <Setting Name="HipChatAuthToken" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">85d90cbf16a72f87dffecf5527406e</Value>
-    </Setting>
-    <Setting Name="RTDevStorage" Type="System.String" Scope="Application">
+    <Setting Name="StorageConnectionString" Type="System.String" Scope="Application">
       <Value Profile="(Default)">DefaultEndpointsProtocol=https;AccountName=ryantechdev;AccountKey=5Qf3G3ZvpNZ+xa8HGjQmcm6/GOJhtM6oGOZpEyENOC4u9I9HZ7GvXF6V9guzZv4vVrfcEzxFO3pAYLOCdaedLQ==</Value>
     </Setting>
     <Setting Name="PreferencesTable" Type="System.String" Scope="Application">
