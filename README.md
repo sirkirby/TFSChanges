@@ -23,17 +23,17 @@ You need a minimum of two rows that which have columns that match the [Preferenc
 - HipChatAuthToken (your v1 hipchat api auth token used for the HipChat Provider)
 - Projects (json array of [TfsProject](TFSChanges/Models/TfsProject.cs) types. This is the configuration used to target specific projects in TFS and specify output channel preferences...needs work as other providers are added)
 
-    [{
-    	"Name":"MyTeamProjectName",
-    	"ProductionUri":"http://projectwebsite.com",
-    	"StagingUri":"http://staging.productwebsite.com",
-    	"HipChatRoomId":123456,
-    	"HipChatNotify":true,
-    	"HipChatChangesetColor":"yellow",
-    	"HipChatBuildColor":"green",
-    	"HipChatBuildFailedColor":"red",
-    	"IsActive":true
-    }]
+        [{
+            "Name":"MyTeamProjectName",
+            "ProductionUri":"http://projectwebsite.com",
+            "StagingUri":"http://staging.productwebsite.com",
+            "HipChatRoomId":123456,
+            "HipChatNotify":true,
+            "HipChatChangesetColor":"yellow",
+            "HipChatBuildColor":"green",
+            "HipChatBuildFailedColor":"red",
+            "IsActive":true
+        }]
 
 Build
 -----
