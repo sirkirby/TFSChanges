@@ -5,46 +5,62 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Args;
 using AutoMapper;
+using TFSChanges.Models;
 
 namespace TFSChanges
 {
-	/// <summary>
-	/// Class Program
-	/// </summary>
 	class Program
 	{
 		static void Main(string[] args)
 		{
-			// create a map for preferences
-			Mapper.CreateMap<Preferences, Preferences>();
-
-			// use reflection to find available providers
-			var assembly = Assembly.GetCallingAssembly();
-			var providers = assembly.GetTypes().Where(t => t.CustomAttributes.FirstOrDefault(c => c.AttributeType == typeof(ProviderAttribute)) != null).ToList();
-
-			var instances = new List<Task<bool>>();
-			// execute all providers
-			providers.ForEach(p =>
+			try
 			{
-				var provider = (ProviderBase)Activator.CreateInstance(p);
-				provider.Complete += (sender, eventArgs) => Trace.WriteLine(string.Format("{0} provider execution completed on {1}", ((ProviderAttribute)p.GetCustomAttribute(typeof(ProviderAttribute))).Name, DateTime.UtcNow.ToString()));
-				instances.Add(provider.ExecuteAsync());
-			});
+				// create maps for object compare operations
+				Mapper.CreateMap<Preferences, Preferences>();
 
-			var allProviders = Task.WhenAll(instances);
+				// get the args
+				var arguments = Configuration.Configure<Arguments>().CreateAndBind(args);
 
-			// keep the process running while providers execute
-			while (!allProviders.IsCompleted)
-				Thread.Sleep(500);
+				// check for validity and attempt to load local config defaults
+				if (!arguments.IsValid)
+					arguments.Defaults();
 
-			Trace.WriteLine("All Done");
+				// gotta have the required args from this point on
+				if (string.IsNullOrEmpty(arguments.StorageAccount))
+					throw new ArgumentNullException(arguments.StorageKey, "You must provide the Azure storage account name");
+				if (string.IsNullOrEmpty(arguments.StorageKey))
+					throw new ArgumentNullException(arguments.StorageKey, "You must provide the Azure storage key");
 
-#if (DEBUG)
-			{
-				Console.ReadLine();
+				// use reflection to find available providers
+				var assembly = Assembly.GetCallingAssembly();
+				var providers = assembly.GetTypes().Where(t => t.CustomAttributes.FirstOrDefault(c => c.AttributeType == typeof(ProviderAttribute)) != null).ToList();
+
+				var instances = new List<Task<bool>>();
+				// execute all providers
+				providers.ForEach(p =>
+				{
+					var provider = (ProviderBase)Activator.CreateInstance(p);
+					provider.Complete += (sender, eventArgs) => Trace.WriteLine(string.Format("{0} provider execution completed on {1}", ((ProviderAttribute)p.GetCustomAttribute(typeof(ProviderAttribute))).Name, DateTime.UtcNow.ToString()));
+					instances.Add(provider.ExecuteAsync(arguments));
+				});
+
+				var allProviders = Task.WhenAll(instances);
+
+				// keep the process running while providers execute
+				while (!allProviders.IsCompleted)
+					Thread.Sleep(500);
+
+				Trace.WriteLine("All Done");
+
+				if (arguments.Debug)
+					Console.ReadLine();
 			}
-#endif
+			catch (Exception e)
+			{
+				Trace.TraceError(e.Message + e.StackTrace, e);
+			}
 		}
 	}
 }

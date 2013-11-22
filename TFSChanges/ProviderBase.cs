@@ -38,13 +38,14 @@ namespace TFSChanges
 		/// <summary>
 		/// post as an asynchronous operation.
 		/// </summary>
+		/// <param name="args">The arguments.</param>
 		/// <returns>Task{System.Boolean}.</returns>
-		public async Task<bool> ExecuteAsync()
+		public async Task<bool> ExecuteAsync(Arguments args)
 		{
 			try
 			{
 				// load the preferences
-				Prefs = await Preferences.LoadAsync();
+				Prefs = await Preferences.LoadAsync(args);
 				// initialize the service reference context
 				var uri = new Uri(Prefs.TfsApiUri);
 				var context = new TFSData(uri);
@@ -57,23 +58,16 @@ namespace TFSChanges
 				{
 					// check for new changesets since the last run
 					foreach (var change in GetChangesets(context, Prefs.LastChecked, project))
-						Console.WriteLine(await PostAsync(change, project));
+						Debug.WriteLine(await PostAsync(change, project));
 
 					// change for new builds since the last run
 					foreach (var build in GetBuilds(context, Prefs.LastChecked, project))
-						Console.WriteLine(await PostAsync(build, project));
+						Debug.WriteLine(await PostAsync(build, project));
 				}
 				// save the preferences
-#if (DEBUG)
-				{
-					Prefs.LastChecked = Prefs.LastChecked;
-				}
-#else
-				{
-					Prefs.LastChecked = DateTime.UtcNow;
-				}
-#endif
-				await Preferences.SaveAsync(Prefs);
+				Prefs.LastChecked = args.Debug ? Prefs.LastChecked : DateTime.UtcNow;
+
+				await Preferences.SaveAsync(args, Prefs);
 
 				OnComplete();
 				return true;
@@ -92,7 +86,7 @@ namespace TFSChanges
 		/// <param name="tfsResult">The TFS result.</param>
 		/// <param name="project">The project.</param>
 		/// <returns>Task{System.Boolean}.</returns>
-		protected abstract Task<bool> PostAsync(TfsResult tfsResult, TfsProject project);
+		protected abstract Task<string> PostAsync(TfsResult tfsResult, TfsProject project);
 
 		/// <summary>
 		/// Get latest changesets from TFS
