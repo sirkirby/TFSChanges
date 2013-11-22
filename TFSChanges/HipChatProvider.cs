@@ -16,7 +16,7 @@ namespace TFSChanges
 		/// <param name="tfsResult">The TFS result.</param>
 		/// <param name="project">The project.</param>
 		/// <returns>Task{System.Boolean}.</returns>
-		protected override async Task<bool> PostAsync(TfsResult tfsResult, TfsProject project)
+		protected override async Task<string> PostAsync(TfsResult tfsResult, TfsProject project)
 		{
 			var client = new HttpClient();
 			var hipchat = new Uri("http://api.hipchat.com/v1/rooms/message?format=json&auth_token=" + Prefs.HipChatAuthToken);
@@ -40,7 +40,8 @@ namespace TFSChanges
 			var formContent = new FormUrlEncodedContent(content);
 			// send the request
 			var result = await client.PostAsync(hipchat, formContent);
-			return result.StatusCode == HttpStatusCode.OK;
+			var responseBody = await result.Content.ReadAsStringAsync();
+			return responseBody;
 		}
 	}
 }
