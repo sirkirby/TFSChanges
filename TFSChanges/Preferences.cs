@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using TFSChanges.Models;
 using TFSChanges.Properties;
 
 namespace TFSChanges
@@ -32,29 +33,23 @@ namespace TFSChanges
 		/// <summary>
 		/// Loads this instance.
 		/// </summary>
+		/// <param name="args">The arguments.</param>
 		/// <returns>Task{System.Boolean}.</returns>
-		public static async Task<Preferences> LoadAsync()
+		public static async Task<Preferences> LoadAsync(Arguments args)
 		{
-			var prefs = new Preferences();
-#if (DEBUG)
-			{
-				prefs.PartitionKey = "TFSChanges_Test";
-			}
-#else
-			{
-				prefs.PartitionKey = "TFSChanges";
-			}
-#endif
+			var storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", args.StorageAccount, args.StorageKey);
+			
+			var prefs = new Preferences {PartitionKey = args.Debug ? "TFSChanges_Test" : "TFSChanges"};
 			// pull the settings for this app version
 			var version = Assembly.GetExecutingAssembly().GetName().Version;
 			prefs.RowKey = version.ToString();
 
 			// Retrieve storage account from connection string
-			var storageAccount = CloudStorageAccount.Parse(Settings.Default.StorageConnectionString);
+			var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 			// Create the table client
 			var tableClient = storageAccount.CreateCloudTableClient();
 			//Create the CloudTable that represents the "people" table.
-			var table = tableClient.GetTableReference(Settings.Default.PreferencesTable);
+			var table = tableClient.GetTableReference(Settings.Default.StorageTableName);
 
 			var operation = TableOperation.Retrieve<Preferences>(prefs.PartitionKey, prefs.RowKey);
 			var results = await table.ExecuteAsync(operation);
@@ -64,24 +59,23 @@ namespace TFSChanges
 				prefs = Mapper.Map<Preferences>(results.Result);
 				return prefs;
 			}
-			else
-			{
-				await SaveAsync(prefs);
-				return prefs;
-			}
+
+			await SaveAsync(args, prefs);
+			return prefs;
 		}
 
 		/// <summary>
 		/// save the preferences
 		/// </summary>
-		public static async Task<bool> SaveAsync(Preferences prefs)
+		public static async Task<bool> SaveAsync(Arguments args, Preferences prefs)
 		{
+			var storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", args.StorageAccount, args.StorageKey);
 			// Retrieve storage account from connection string
-			var storageAccount = CloudStorageAccount.Parse(Settings.Default.StorageConnectionString);
+			var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 			// Create the table client
 			var tableClient = storageAccount.CreateCloudTableClient();
 			//Create the CloudTable that represents the "people" table.
-			var table = tableClient.GetTableReference(Settings.Default.PreferencesTable);
+			var table = tableClient.GetTableReference(Settings.Default.StorageTableName);
 			// save operation
 			var operation = TableOperation.InsertOrMerge(prefs);
 			var response = await table.ExecuteAsync(operation);
