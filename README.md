@@ -11,7 +11,7 @@ Create a new table on your Azure storage account and put the name of that table 
     	<value>TFSIntegration</value>
     </setting>
 
-You need a minimum of two rows that which have columns that match the [Preferences](TFSChanges/Preferences.cs) class. Azure tables can have any structure, but for the automatic serialization and deserialization to work, you need those class properties at minimum. The PartitionKey is static, `TFSChanges` for production and `TFSChanges_Text` for testing. The RowKey should match the [assembly](TFSChanges/Properties/AssemblyInfo.cs) version, ex `1.1.0.0`
+You need a minimum of two rows that which have columns that match the [Preferences](TFSChanges/Preferences.cs) class. Azure tables can have any structure, but for the automatic serialization and deserialization to work, you need those class properties at minimum. The PartitionKey is static, `TFSChanges` for production and `TFSChanges_Test` for testing. The RowKey should match the [assembly](TFSChanges/Properties/AssemblyInfo.cs) version, ex `1.1.0.0`
 
 - LastChecked (used as the placeholder for polling)
 - TfsUser (tfs service username **you must enable alternate credentials in your profile, this is not your ms account id**)
