@@ -56,10 +56,12 @@ namespace TFSChanges
 				// check each configured project
 				foreach (var project in JsonConvert.DeserializeObject<List<TfsProject>>(Prefs.Projects))
 				{
+					Debug.WriteLine(project.Name + " changesets");
 					// check for new changesets since the last run
 					foreach (var change in GetChangesets(context, Prefs.LastChecked, project))
 						Debug.WriteLine(await PostAsync(change, project));
 
+					Debug.WriteLine(project.Name + " builds");
 					// change for new builds since the last run
 					foreach (var build in GetBuilds(context, Prefs.LastChecked, project))
 						Debug.WriteLine(await PostAsync(build, project));
@@ -68,6 +70,7 @@ namespace TFSChanges
 				Prefs.LastChecked = args.Debug ? Prefs.LastChecked : DateTime.UtcNow;
 
 				await Preferences.SaveAsync(args, Prefs);
+				Debug.WriteLine("Settings saved");
 
 				OnComplete();
 				return true;

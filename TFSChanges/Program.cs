@@ -60,6 +60,7 @@ namespace TFSChanges
 			catch (Exception e)
 			{
 				Trace.TraceError(e.Message + e.StackTrace, e);
+				throw;
 			}
 		}
 	}
