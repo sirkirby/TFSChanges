@@ -56,21 +56,21 @@ namespace TFSChanges
 				// check each configured project
 				foreach (var project in JsonConvert.DeserializeObject<List<TfsProject>>(Prefs.Projects))
 				{
-					Debug.WriteLine(project.Name + " changesets");
+					Trace.WriteLine(project.Name + " changesets");
 					// check for new changesets since the last run
 					foreach (var change in GetChangesets(context, Prefs.LastChecked, project))
-						Debug.WriteLine(await PostAsync(change, project));
+						Trace.WriteLine(await PostAsync(change, project));
 
-					Debug.WriteLine(project.Name + " builds");
+					Trace.WriteLine(project.Name + " builds");
 					// change for new builds since the last run
 					foreach (var build in GetBuilds(context, Prefs.LastChecked, project))
-						Debug.WriteLine(await PostAsync(build, project));
+						Trace.WriteLine(await PostAsync(build, project));
 				}
 				// save the preferences
 				Prefs.LastChecked = args.Debug ? Prefs.LastChecked : DateTime.UtcNow;
 
 				await Preferences.SaveAsync(args, Prefs);
-				Debug.WriteLine("Settings saved");
+				Trace.WriteLine("Settings saved");
 
 				OnComplete();
 				return true;
@@ -78,9 +78,8 @@ namespace TFSChanges
 			catch (Exception e)
 			{
 				Trace.TraceError(e.Message, Prefs);
+				throw;
 			}
-			OnComplete();
-			return false;
 		}
 
 		/// <summary>
