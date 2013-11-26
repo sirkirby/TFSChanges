@@ -22,6 +22,15 @@ namespace TFSChanges
 		protected Preferences Prefs { get; private set; }
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="ProviderBase"/> class.
+		/// </summary>
+		/// <param name="prefs">The prefs.</param>
+		protected ProviderBase(Preferences prefs)
+		{
+			Prefs = prefs;
+		}
+
+		/// <summary>
 		/// Occurs when [complete].
 		/// </summary>
 		public event EventHandler<EventArgs> Complete;
@@ -40,12 +49,10 @@ namespace TFSChanges
 		/// </summary>
 		/// <param name="args">The arguments.</param>
 		/// <returns>Task{System.Boolean}.</returns>
-		public async Task<bool> ExecuteAsync(Arguments args)
+		public async Task<bool> ExecuteAsync()
 		{
 			try
 			{
-				// load the preferences
-				Prefs = await Preferences.LoadAsync(args);
 				// initialize the service reference context
 				var uri = new Uri(Prefs.TfsApiUri);
 				var context = new TFSData(uri);
@@ -54,23 +61,17 @@ namespace TFSChanges
 				var cache = new CredentialCache { { uri, "Basic", creds } };
 				context.Credentials = cache;
 				// check each configured project
+				var doItDoug = new List<Task<string>>();
 				foreach (var project in JsonConvert.DeserializeObject<List<TfsProject>>(Prefs.Projects))
 				{
-					Trace.WriteLine(project.Name + " changesets");
 					// check for new changesets since the last run
-					foreach (var change in GetChangesets(context, Prefs.LastChecked, project))
-						Trace.WriteLine(await PostAsync(change, project));
-
-					Trace.WriteLine(project.Name + " builds");
+					doItDoug.AddRange(GetChangesets(context, Prefs.LastChecked, project).Select(change => PostAsync(change, project)));
 					// change for new builds since the last run
-					foreach (var build in GetBuilds(context, Prefs.LastChecked, project))
-						Trace.WriteLine(await PostAsync(build, project));
+					doItDoug.AddRange(GetBuilds(context, Prefs.LastChecked, project).Select(build => PostAsync(build, project)));
 				}
-				// save the preferences
-				Prefs.LastChecked = args.Debug ? Prefs.LastChecked : DateTime.UtcNow;
 
-				await Preferences.SaveAsync(args, Prefs);
-				Trace.WriteLine("Settings saved");
+				// run all the polling in parallel
+				await Task.WhenAll(doItDoug);
 
 				OnComplete();
 				return true;

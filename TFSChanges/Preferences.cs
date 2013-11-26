@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,15 +12,28 @@ namespace TFSChanges
 {
 	public class Preferences : TableEntity
 	{
+		private string _tfsApiUri;
+
+		public string TfsApiUri
+		{
+			get { return _tfsApiUri ?? "https://tfsodata.visualstudio.com/DefaultCollection/"; }
+			set { _tfsApiUri = value; }
+		}
+
 		public DateTime LastChecked { get; set; }
 		public string TfsUser { get; set; }
 		public string TfsPassword { get; set; }
-		public string TfsApiUri { get; set; }
 		public string TfsUri { get; set; }
 		public string HipChatAuthToken { get; set; }
 		public string AlmTaskUri { get; set; }
 		public string AlmTaskExpression { get; set; }
 		public string Projects { get; set; }
+		[IgnoreProperty]
+		public string StorageAccount { get; set; }
+		[IgnoreProperty]
+		public string StorageKey { get; set; }
+		[IgnoreProperty]
+		public bool Debug { get; set; }
 
 		/// <summary>
 		/// Init the preferences
@@ -57,19 +71,21 @@ namespace TFSChanges
 			if (results != null)
 			{
 				prefs = Mapper.Map<Preferences>(results.Result);
+				prefs.StorageAccount = args.StorageAccount;
+				prefs.StorageKey = args.StorageKey;
+				prefs.Debug = args.Debug;
 				return prefs;
 			}
 
-			await SaveAsync(args, prefs);
 			return prefs;
 		}
 
 		/// <summary>
 		/// save the preferences
 		/// </summary>
-		public static async Task<bool> SaveAsync(Arguments args, Preferences prefs)
+		public static async Task<bool> SaveAsync(Preferences prefs)
 		{
-			var storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", args.StorageAccount, args.StorageKey);
+			var storageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", prefs.StorageAccount, prefs.StorageKey);
 			// Retrieve storage account from connection string
 			var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 			// Create the table client
@@ -79,8 +95,9 @@ namespace TFSChanges
 			// save operation
 			var operation = TableOperation.InsertOrMerge(prefs);
 			var response = await table.ExecuteAsync(operation);
+			Trace.WriteLine(response);
 			// return success | failure
-			return response.HttpStatusCode == 200;
+			return response.HttpStatusCode < 400;
 		}
 	}
 }

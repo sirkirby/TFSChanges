@@ -34,16 +34,25 @@ namespace TFSChanges
 					throw new ArgumentNullException(arguments.StorageKey, "You must provide the Azure storage key");
 
 				// use reflection to find available providers
-				var assembly = Assembly.GetCallingAssembly();
+				var assembly = Assembly.GetAssembly(typeof(ProviderBase));
 				var providers = assembly.GetTypes().Where(t => t.CustomAttributes.FirstOrDefault(c => c.AttributeType == typeof(ProviderAttribute)) != null).ToList();
+
+				// load the preferences
+				var prefs = Preferences.LoadAsync(arguments).Result;
+
+				// check to make sure we have the settings we need
+				if (prefs.Projects.Length <= 2)
+					throw new ArgumentNullException(prefs.Projects, "You must provide a list of Projects's to poll");
+				if (string.IsNullOrEmpty(prefs.TfsUser) || string.IsNullOrEmpty(prefs.TfsPassword))
+					throw new ArgumentNullException(prefs.TfsUser, "You must provider your alternate tfs credentials. TfsUser and TfsPassword");
 
 				var instances = new List<Task<bool>>();
 				// execute all providers
 				providers.ForEach(p =>
 				{
-					var provider = (ProviderBase)Activator.CreateInstance(p);
+					var provider = (ProviderBase)Activator.CreateInstance(p, new object[] {prefs});
 					provider.Complete += (sender, eventArgs) => Trace.WriteLine(string.Format("{0} provider execution completed on {1}", ((ProviderAttribute)p.GetCustomAttribute(typeof(ProviderAttribute))).Name, DateTime.UtcNow.ToString()));
-					instances.Add(provider.ExecuteAsync(arguments));
+					instances.Add(provider.ExecuteAsync());
 				});
 
 				var allProviders = Task.WhenAll(instances);
@@ -51,6 +60,10 @@ namespace TFSChanges
 				// keep the process running while providers execute
 				while (!allProviders.IsCompleted)
 					Thread.Sleep(500);
+
+				// save the preferences
+				prefs.LastChecked = prefs.Debug ? prefs.LastChecked : DateTime.UtcNow;
+				Trace.WriteLine(Preferences.SaveAsync(prefs).Result ? "Settings saved" : "Settings save failed!");
 
 				Trace.WriteLine("All Done");
 

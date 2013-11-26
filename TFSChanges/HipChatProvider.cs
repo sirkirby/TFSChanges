@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TFSChanges.Models;
@@ -10,6 +10,12 @@ namespace TFSChanges
 	[Provider("HipChat")]
 	public class HipChatProvider : ProviderBase
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ProviderBase" /> class.
+		/// </summary>
+		/// <param name="prefs">The prefs.</param>
+		public HipChatProvider(Preferences prefs) : base(prefs) {}
+
 		/// <summary>
 		/// post data as an asynchronous operation.
 		/// </summary>
@@ -41,6 +47,7 @@ namespace TFSChanges
 			// send the request
 			var result = await client.PostAsync(hipchat, formContent);
 			var responseBody = await result.Content.ReadAsStringAsync();
+			Trace.WriteLine(responseBody);
 			return responseBody;
 		}
 	}
