@@ -55,7 +55,7 @@ namespace TFSChanges
 			
 			var prefs = new Preferences {PartitionKey = args.Debug ? "TFSChanges_Test" : "TFSChanges"};
 			// pull the settings for this app version
-			var version = Assembly.GetExecutingAssembly().GetName().Version;
+			var version = Assembly.GetAssembly(typeof(ProviderBase)).GetName().Version;
 			prefs.RowKey = version.ToString();
 
 			// Retrieve storage account from connection string
