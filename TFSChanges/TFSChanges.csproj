@@ -90,7 +90,7 @@
   <ItemGroup>
     <Compile Include="HipChatProvider.cs" />
     <Compile Include="Models\Arguments.cs" />
-    <Compile Include="Models\TFSResult.cs" />
+    <Compile Include="Models\TfsResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Models\TfsProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
