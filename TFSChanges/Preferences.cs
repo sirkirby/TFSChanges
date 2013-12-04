@@ -77,6 +77,8 @@ namespace TFSChanges
 				return prefs;
 			}
 
+			Trace.WriteLineIf(Program.Ts.TraceWarning, "Preferences were not found in storage");
+
 			return prefs;
 		}
 
@@ -95,7 +97,7 @@ namespace TFSChanges
 			// save operation
 			var operation = TableOperation.InsertOrMerge(prefs);
 			var response = await table.ExecuteAsync(operation);
-			Trace.WriteLine(response.Result.ToString());
+			Trace.WriteLineIf(Program.Ts.TraceVerbose, response.Result.ToString());
 			// return success | failure
 			return response.HttpStatusCode < 400;
 		}

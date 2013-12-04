@@ -14,11 +14,16 @@ namespace TFSChanges
 	class Program
 	{
 		private static readonly object MyLock = new Object();
+		public static TraceSwitch Ts = new TraceSwitch("levelSwitch", null);
 
 		static void Main(string[] args)
 		{
 			try
 			{
+#if DEBUG
+				// override the configured trace switch level if debugging
+				Ts.Level = TraceLevel.Verbose;
+#endif
 				// create maps for object compare operations
 				Mapper.CreateMap<Preferences, Preferences>();
 
@@ -53,8 +58,8 @@ namespace TFSChanges
 				// execute all providers
 				providers.ForEach(p =>
 				{
-					var provider = (ProviderBase)Activator.CreateInstance(p, new object[] {prefs});
-					provider.Complete += (sender, eventArgs) => Trace.WriteLine(string.Format("{0} provider execution completed on {1}", ((ProviderAttribute)p.GetCustomAttribute(typeof(ProviderAttribute))).Name, DateTime.UtcNow.ToString()));
+					var provider = (ProviderBase)Activator.CreateInstance(p, new object[] { prefs });
+					provider.Complete += (sender, eventArgs) => Trace.WriteLineIf(Ts.TraceInfo, string.Format("{0} provider execution completed on {1}", ((ProviderAttribute)p.GetCustomAttribute(typeof(ProviderAttribute))).Name, DateTime.UtcNow.ToString()));
 					provider.FoundWork += (sender, eventArgs) =>
 					{
 						// attempt to make thread safe
@@ -72,17 +77,19 @@ namespace TFSChanges
 
 				// save the preferences and only update the poll date if we're in prod and actually did something
 				prefs.LastChecked = prefs.Debug || !weDidSomething ? prefs.LastChecked : DateTime.UtcNow;
-				Trace.WriteLine(Preferences.SaveAsync(prefs).Result ? "Settings saved" : "Settings save failed!");
+				Trace.WriteLineIf(Ts.TraceVerbose, Preferences.SaveAsync(prefs).Result ? "Settings saved" : "Settings save failed!");
 
-				Trace.WriteLine("All Done");
+				Trace.WriteLineIf(Ts.TraceVerbose, "All Done");
 
 				if (arguments.Debug)
+				{
+					Console.WriteLine("Press the any key to exit");
 					Console.ReadLine();
+				}
 			}
 			catch (Exception e)
 			{
 				Trace.TraceError(e.Message + e.StackTrace, e);
-				throw;
 			}
 		}
 	}

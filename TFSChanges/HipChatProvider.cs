@@ -44,10 +44,11 @@ namespace TFSChanges
 					break;
 			}
 			var formContent = new FormUrlEncodedContent(content);
-			// send the request
+			Trace.WriteLineIf(Program.Ts.TraceVerbose, tfsResult.FormattedMessage);
+			// send the request and get the response
 			var result = await client.PostAsync(hipchat, formContent);
 			var responseBody = await result.Content.ReadAsStringAsync();
-			Trace.WriteLine(responseBody);
+			Trace.WriteLineIf(Program.Ts.TraceVerbose, responseBody);
 			return responseBody;
 		}
 	}

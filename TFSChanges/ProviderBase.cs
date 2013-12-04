@@ -126,7 +126,13 @@ namespace TFSChanges
 			var issueRegex = new Regex(Prefs.AlmTaskExpression);
 
 			// only grab the most recent changesets for the given project
-			foreach (var changeset in changesets.Where(c => c.CreationDate > lastChecked))
+			var results = changesets.Where(c => c.CreationDate > lastChecked).ToList();
+
+			// some verbose logging for when we just need to know
+			if (results.Any())
+				Trace.WriteLineIf(Program.Ts.TraceVerbose, string.Format("New changesets found for {0} since {1}", project.Name, lastChecked));
+			
+			foreach (var changeset in results)
 			{
 				var result = new TfsResult { From = "TFS Changeset", TFSType = TfsType.Changeset };
 				var comment = issueRegex.Replace(changeset.Comment, (m) => string.Format(@"<a href=""" + Prefs.AlmTaskUri + @"{0}"">{0}</a>", m.Captures[0].Value));
@@ -138,7 +144,6 @@ namespace TFSChanges
 				yield return result;
 				builder.Clear();
 			}
-
 		}
 
 		/// <summary>
@@ -150,10 +155,14 @@ namespace TFSChanges
 		/// <returns>collection of formatted strings with select build information</returns>
 		protected IEnumerable<TfsResult> GetBuilds(TFSData context, DateTime lastChecked, TfsProject project)
 		{
-			var builds = context.Builds.Where(b => b.BuildFinished && b.FinishTime > lastChecked && b.Project == project.Name);
+			var builds = context.Builds.Where(b => b.BuildFinished && b.FinishTime > lastChecked && b.Project == project.Name).ToList();
 
 			var builder = new StringBuilder();
 			var writer = new StringWriter(builder);
+
+			// some verbose logging for when we just need to know
+			if (builds.Any())
+				Trace.WriteLineIf(Program.Ts.TraceVerbose, string.Format("New builds found for {0} since {1}", project.Name, lastChecked));
 
 			foreach (var build in builds)
 			{
