@@ -95,7 +95,7 @@ namespace TFSChanges
 			// save operation
 			var operation = TableOperation.InsertOrMerge(prefs);
 			var response = await table.ExecuteAsync(operation);
-			Trace.WriteLine(response);
+			Trace.WriteLine(response.Result.ToString());
 			// return success | failure
 			return response.HttpStatusCode < 400;
 		}

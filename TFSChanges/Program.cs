@@ -13,6 +13,8 @@ namespace TFSChanges
 {
 	class Program
 	{
+		private static readonly object MyLock = new Object();
+
 		static void Main(string[] args)
 		{
 			try
@@ -47,11 +49,18 @@ namespace TFSChanges
 					throw new ArgumentNullException(prefs.TfsUser, "You must provider your alternate tfs credentials. TfsUser and TfsPassword");
 
 				var instances = new List<Task<bool>>();
+				var weDidSomething = false;
 				// execute all providers
 				providers.ForEach(p =>
 				{
 					var provider = (ProviderBase)Activator.CreateInstance(p, new object[] {prefs});
 					provider.Complete += (sender, eventArgs) => Trace.WriteLine(string.Format("{0} provider execution completed on {1}", ((ProviderAttribute)p.GetCustomAttribute(typeof(ProviderAttribute))).Name, DateTime.UtcNow.ToString()));
+					provider.FoundWork += (sender, eventArgs) =>
+					{
+						// attempt to make thread safe
+						lock (MyLock)
+							weDidSomething = true;
+					};
 					instances.Add(provider.ExecuteAsync());
 				});
 
@@ -61,8 +70,8 @@ namespace TFSChanges
 				while (!allProviders.IsCompleted)
 					Thread.Sleep(500);
 
-				// save the preferences
-				prefs.LastChecked = prefs.Debug ? prefs.LastChecked : DateTime.UtcNow;
+				// save the preferences and only update the poll date if we're in prod and actually did something
+				prefs.LastChecked = prefs.Debug || !weDidSomething ? prefs.LastChecked : DateTime.UtcNow;
 				Trace.WriteLine(Preferences.SaveAsync(prefs).Result ? "Settings saved" : "Settings save failed!");
 
 				Trace.WriteLine("All Done");

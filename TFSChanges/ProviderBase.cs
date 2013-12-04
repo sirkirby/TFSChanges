@@ -45,6 +45,20 @@ namespace TFSChanges
 		}
 
 		/// <summary>
+		/// Occurs when [found work].
+		/// </summary>
+		public event EventHandler<EventArgs> FoundWork;
+
+		/// <summary>
+		/// Called when [found work].
+		/// </summary>
+		protected virtual void OnFoundWork()
+		{
+			var handler = FoundWork;
+			if (handler != null) handler(this, EventArgs.Empty);
+		}
+
+		/// <summary>
 		/// post as an asynchronous operation.
 		/// </summary>
 		/// <param name="args">The arguments.</param>
@@ -70,7 +84,11 @@ namespace TFSChanges
 					doItDoug.AddRange(GetBuilds(context, Prefs.LastChecked, project).Select(build => PostAsync(build, project)));
 				}
 
-				// run all the polling in parallel
+				// tell the invoker that work was found
+				if (doItDoug.Any())
+					OnFoundWork();
+
+				// wait for all the requests to complete
 				await Task.WhenAll(doItDoug);
 
 				OnComplete();
